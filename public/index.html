@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Material Catalogue</title>
+  <style>
+    /* Global styles */
+    html, body {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+      background-color: #f7f5f0;
+      color: #333;
+      /* Let the body fill the screen height to help with our calc() */
+      height: 100vh;
+    }
+
+    /* We keep 20px padding around the content container */
+    body > .wrapper {
+      padding: 20px;
+      box-sizing: border-box;
+      max-width: 1200px;   /* Restrict max width to 1200px */
+      margin: 0 auto;      /* Center on wide screens */
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    /* Viewer (top) - now 500px high */
+    .iframe-container {
+      width: 100%;
+      height: 400px; /* Larger height */
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    /* 
+      Scrollable materials box
+      We want it to end ~50px from the bottom:
+      -> height: calc(100vh - 600px - 90px) 
+         Explanation:
+           - 100vh: entire screen
+           - 600px: viewer height
+           - ~90px overhead (h1 + margins + top padding)
+         Adjust if you need more/less top/bottom spacing
+    */
+    .materials-box {
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      padding: 10px;
+      overflow-y: auto;  /* Scroll if contents exceed max height */
+      height: calc(100vh - 450px - 90px);
+      box-sizing: border-box;
+    }
+
+    /* Grid of materials inside the box */
+    .materials-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(100px, 1fr));
+      gap: 10px;
+    }
+
+    .material {
+      background: #fff;
+      border-radius: 8px;
+      text-align: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      padding: 10px;
+      cursor: pointer; /* Indicate it's clickable */
+    }
+
+    .material:hover {
+      background-color: #eee; /* Simple hover effect */
+    }
+
+    .material img {
+      width: 80px;
+      height: 80px;
+      background: #ddd; /* Placeholder gray */
+      border-radius: 8px;
+      object-fit: cover;
+    }
+
+    .material-name {
+      font-weight: bold;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="wrapper">
+    <h1>MATERIAL CATALOGUE</h1>
+
+    <!-- TOP SECTION: 3D Viewer -->
+    <div class="iframe-container" id="frame-container"></div>
+
+    <!-- BOTTOM SECTION: Scrollable Materials Box -->
+    <div class="materials-box">
+      <div class="materials-grid" id="materials-grid"></div>
+    </div>
+  </div>
+
+  <!-- Load your JavaScript (unchanged) -->
+  <script type="module" src="/src/script.js"></script>
+</body>
+</html>

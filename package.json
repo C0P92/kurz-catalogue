@@ -1,0 +1,19 @@
+{
+  "name": "dc_catalogue",
+  "version": "1.0.0",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "vite"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@dreamcomposer/pre": "^0.0.87"
+  },
+  "devDependencies": {
+    "vite": "^6.2.2"
+  }
+}
