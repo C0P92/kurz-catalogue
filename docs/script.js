@@ -1,4 +1,4 @@
-import * as dc from '@dreamcomposer/pre';
+import * as dc from "https://cdn.jsdelivr.net/npm/@dreamcomposer/pre/+esm";
 // Use the token from the environment variable
 const token = import.meta.env.VITE_DC_TOKEN;
 dc.setAccessToken(token); //replace with 'token'
@@ -205,7 +205,7 @@ allMaterials.forEach((mat) => {
   // Thumbnail
   const img = document.createElement('img');
   img.alt = mat.name;
-  img.src = `assets/foils/${makeFileNameFromName(mat.name)}`;
+  img.src = `/assets/foils/${makeFileNameFromName(mat.name)}`;
 
   // Label
   const nameDiv = document.createElement('div');
