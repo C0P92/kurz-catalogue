@@ -205,7 +205,7 @@ allMaterials.forEach((mat) => {
   // Thumbnail
   const img = document.createElement('img');
   img.alt = mat.name;
-  img.src = `./assets/foils/${makeFileNameFromName(mat.name)}`;
+  img.src = `assets/foils/${makeFileNameFromName(mat.name)}`;
 
   // Label
   const nameDiv = document.createElement('div');
