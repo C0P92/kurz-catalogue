@@ -2,27 +2,24 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Material Catalogue</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Material Catalogue Demo</title>
   <style>
-    /* Global styles */
-    html, body {
-      margin: 0;
-      padding: 0;
+    html, 
+    body {
+      margin: 0; 
+      padding: 0; 
       box-sizing: border-box;
-      font-family: Arial, sans-serif;
-      background-color: #f7f5f0;
-      color: #333;
-      /* Let the body fill the screen height to help with our calc() */
+      font-family: Roboto, sans-serif;
+      background-color: #f7f5f0; 
+      color: #333; 
       height: 100vh;
     }
-
-    /* We keep 20px padding around the content container */
-    body > .wrapper {
+    .wrapper {
       padding: 20px;
       box-sizing: border-box;
-      max-width: 1200px;   /* Restrict max width to 1200px */
-      margin: 0 auto;      /* Center on wide screens */
+      max-width: 1200px;
+      margin: 0 auto;
     }
 
     h1 {
@@ -30,85 +27,606 @@
       margin-bottom: 20px;
     }
 
-    /* Viewer (top) - now 500px high */
     .iframe-container {
       width: 100%;
-      height: 400px; /* Larger height */
+      height: 40vh;
       border-radius: 8px;
       overflow: hidden;
       margin-bottom: 20px;
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      position: relative;
     }
 
-    /* 
-      Scrollable materials box
-      We want it to end ~50px from the bottom:
-      -> height: calc(100vh - 600px - 90px) 
-         Explanation:
-           - 100vh: entire screen
-           - 600px: viewer height
-           - ~90px overhead (h1 + margins + top padding)
-         Adjust if you need more/less top/bottom spacing
-    */
     .materials-box {
-      background: #fff;
-      border-radius: 8px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      padding: 10px;
-      overflow-y: auto;  /* Scroll if contents exceed max height */
-      height: calc(100vh - 450px - 90px);
-      box-sizing: border-box;
+      overflow-y: auto;
+      height: calc(60vh - 50px - 90px);
     }
 
-    /* Grid of materials inside the box */
-    .materials-grid {
-      display: grid;
-      grid-template-columns: repeat(5, minmax(100px, 1fr));
-      gap: 10px;
+    .kurz-logo {
+      position: absolute;
+      width: 150px;
+      top: 37.5px;
+      right: 37.5px;
+      z-index: 10;
+      background: rgba(255,255,255,0.0);
+      border-radius: 0px;
+      padding: 0px 0px;
     }
 
     .material {
+      width: 8rem;
       background: #fff;
       border-radius: 8px;
       text-align: center;
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      padding: 10px;
-      cursor: pointer; /* Indicate it's clickable */
+      padding: 12px 8px 10px 8px;
+      cursor: pointer;
+      border: 2.5px solid transparent;
+      transition: border 0.18s, background 0.2s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .material.selected {
+      border: 2.5px solid #2866a1;
+      background: #ddeffd;
     }
 
     .material:hover {
-      background-color: #eee; /* Simple hover effect */
+      background-color: #eee;
     }
 
     .material img {
       width: 80px;
       height: 80px;
-      background: #ddd; /* Placeholder gray */
+      background: #ddd;
       border-radius: 8px;
       object-fit: cover;
     }
 
-    .material-name {
+    .k-code {
       font-weight: bold;
-      margin-top: 10px;
+      font-size: 1.13em;
+      color: #2a4056;
+      margin-top: 5px;
+      margin-bottom: 2px;
+      letter-spacing: 1px;
     }
+
+    .material-name {
+      font-size: 0.97em;
+      margin: 0;
+      font-weight: normal;
+      word-break: break-word;
+      margin-bottom: 3px;
+    }
+
+    .material-info {
+      font-size: 0.86em;
+      color: #444;
+      opacity: 0.55;
+      margin-top: 2px;
+    }
+
+    .dreamcomposer-branding {
+      position: absolute;
+      left: 24px;
+      bottom: 20px;
+      z-index: 10;
+      background: rgba(255,255,255,0.0);
+      border-radius: 7px;
+      padding: 7px 18px 6px 12px;
+      font-family: inherit;
+      pointer-events: true;
+      text-align: left;
+    }
+
+    .branding-small {
+      font-size: 0.78em;
+      color: #fff;
+      margin: 0 0 2px 0;
+      line-height: 1.1;
+      opacity: 0.6;
+      letter-spacing: 1px;
+    }
+
+    .branding-big {
+      font-size: 1.08em;
+      font-weight: bold;
+      color: #fff;
+      margin: 0 0 2px 0;
+      letter-spacing: 1px;
+      opacity: 0.6;
+      line-height: 1.15;
+    }
+
+    .branding-big sup {
+      font-size: 0.65em;
+      top: -0.4em;
+      position: relative;
+      letter-spacing: 0;
+    }
+
+    .category-section {
+      width: 100%;
+      margin-bottom: 12px;
+    }
+
+    .category-line-title {
+      display: flex;
+      align-items: center;
+      margin: 32px 0 24px 0;
+      position: sticky;
+      top: 0;
+      background: #f7f5f0;
+      z-index: 2;
+    }
+
+    .category-line-title .line {
+      flex: 1;
+      height: 1px;
+      background: #ccc;
+    }
+
+    .category-line-title .title {
+      font-weight: bold;
+      font-size: 1.12em;
+      margin: 0 18px;
+      letter-spacing: 1px;
+      text-align: center;
+      color: #888;
+    }
+
+    .category-materials {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      justify-content: center;
+    }
+
+    /* ====== DRAG HINT (lower third, non-blocking) ====== */
+    .drag-hint {
+      position: absolute;
+      left: 50%;
+      bottom: 35%;              /* ~lower third */
+      transform: translateX(-50%);
+      z-index: 9999;
+      pointer-events: none;     /* never blocks your interactions */
+      transition: opacity .24s ease, visibility .24s ease;
+    }
+    .drag-hint.hidden {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    .drag-hint .hint-inner {
+      display: inline-block; /* so transform works only on icon */
+      animation: dragSlide 1.5s ease-in-out infinite alternate;
+      will-change: transform;
+    }
+
+    /* Size the inline SVG responsively; internal SVG colors come from the file */
+    .drag-hint svg {
+      width: clamp(100px, 16vw, 140px);
+      height: auto;
+      display: block;
+      opacity: 0.80;
+      filter: drop-shadow(0 2px 6px rgba(0,0,0,.35));
+  
+    }
+
+    /* Keyframes: small horizontal shift */
+    @keyframes dragSlide {
+      0%   { transform: translateX(-12px); }
+      100% { transform: translateX(12px); }
+    }
+    /* =================================================== */
   </style>
 </head>
 <body>
-
   <div class="wrapper">
-    <h1>MATERIAL CATALOGUE</h1>
-
-    <!-- TOP SECTION: 3D Viewer -->
+    <h1>MATERIAL CATALOGUE DEMO</h1>
     <div class="iframe-container" id="frame-container"></div>
-
-    <!-- BOTTOM SECTION: Scrollable Materials Box -->
     <div class="materials-box">
       <div class="materials-grid" id="materials-grid"></div>
     </div>
   </div>
+  <script type="module">
+    // Import PRE from CDN
+    import * as dc from "https://cdn.jsdelivr.net/npm/@dreamcomposer/pre@0.0.88/+esm";
 
-  <!-- Load your JavaScript (unchanged) -->
-  <script type="module" src="script.js"></script>
+    // Set up access token and viewer
+    const ACCESS_TOKEN = "ba6f9097-04d1-4b48-af36-cf9cd727950c";
+    dc.setAccessToken(ACCESS_TOKEN);
+    const dcController = dc.init("frame-container");
+    const container = document.getElementById('frame-container');
+
+    // Add logo with hyperlink to the container
+    const logoLink = document.createElement('a');
+    logoLink.href = 'https://kurz.de/?utm_source=clays&utm_medium=website&utm_campaign=material+catalogue';
+    logoLink.target = '_blank';
+    logoLink.rel = 'noopener noreferrer';
+    const logo = document.createElement('img');
+    logo.src = 'kurz-logo_w.png';
+    logo.className = 'kurz-logo';
+    logo.alt = 'KURZ Logo';
+    logoLink.appendChild(logo);
+    container.appendChild(logoLink);
+
+    // Branding area with DREAMCOMPOSER link
+    const branding = document.createElement('div');
+    branding.className = 'dreamcomposer-branding';
+    branding.innerHTML = `
+      <p class="branding-small">Powered by</p>
+      <p class="branding-big">
+        <a href="https://dreamcomposer.de/en/?utm_source=clays&utm_medium=website&utm_campaign=material+catalogue" target="_blank" style="color:#fff; text-decoration:none;">
+          DREAMCOMPOSER<sup>®</sup>
+        </a>
+      </p>
+      <p class="branding-small">a KURZ product</p>
+    `;
+    container.appendChild(branding);
+
+    /* ====== Inject SVG as inline code ====== */
+    const dragHint = document.createElement('div');
+    dragHint.className = 'drag-hint';
+    dragHint.setAttribute('aria-hidden', 'false');
+
+dragHint.innerHTML = `
+<div class="hint-inner">
+<!-- BEGIN Move_Icon.svg -->
+<svg id="Move_Icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980.11 531.22">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: none;
+        stroke: #fff;
+        stroke-miterlimit: 10;
+        stroke-width: 18px;
+      }
+
+      .cls-2 {
+        fill: #fff;
+      }
+    </style>
+  </defs>
+  <g>
+    <path class="cls-2" d="M743.37,122.97c-8.71,4.08-15.3,10.77-19.55,18.64-13.24-12.9-33.52-17.08-51.22-8.79-11.34,5.31-19.46,14.72-23.47,25.64-13.58-9.04-31.34-11.14-47.16-3.73-9.31,4.36-16.52,11.37-21.28,19.68l-44.47-94.93c-11.24-24-39.92-34.39-63.93-23.14-24,11.24-34.39,39.92-23.14,63.93l100.91,215.42-43.57-24.38c-36.2-17-71.69-1.91-86.68,20.95-11.35,17.3-9.56,36.51,4.57,48.95.38.33.78.63,1.19.9l178.2,116.14c32.06,33.19,81.66,42.34,123.44,22.77l107.54-50.38c53.91-25.25,77.22-89.65,51.96-143.56l-85.86-183.29c-10.12-21.59-35.91-30.93-57.49-20.82h0ZM867.99,335.86c20.41,43.58,1.57,95.64-42.01,116.05l-107.54,50.38c-33.78,15.83-73.88,8.42-99.83-18.44l-.82-.84c-.53-.55-1.12-1.04-1.76-1.45l-178.46-116.32c-7.85-7.42-3.69-16.7-.46-21.63,10.22-15.57,34.9-25.63,59.94-13.91l70.97,39.74c3.93,2.19,8.83,1.6,12.09-1.45,3.29-3.07,4.23-7.9,2.33-11.97l-114.55-244.53c-6.41-13.68-.49-30.01,13.18-36.42,13.68-6.41,30.01-.49,36.42,13.18l67.98,145.12c.05.11.16.18.21.29l34.79,74.26c2.42,5.17,8.58,7.4,13.76,4.98,5.18-2.43,7.4-8.58,4.98-13.76l-41.72-89.05c-6.44-13.75-.5-30.19,13.26-36.63s30.19-.49,36.63,13.26l3.22,6.88,38.49,82.17c2.42,5.17,8.58,7.4,13.76,4.98,5.18-2.43,7.4-8.58,4.98-13.76l-38.49-82.17c-5.85-12.5-.45-27.42,12.04-33.27,12.5-5.85,27.42-.45,33.27,12.04l7.9,16.87,30.59,65.3c2.42,5.17,8.58,7.4,13.76,4.98s7.4-8.58,4.98-13.76l-30.59-65.3c-5.27-11.26-.4-24.72,10.86-29.99s24.71-.4,29.98,10.86l85.86,183.29v.02Z"/>
+    <path class="cls-2" d="M447.1,177.59c3.42-4.57,2.5-11.05-2.08-14.48-10.31-7.72-18.34-17.63-23.89-29.47-18.56-39.61-1.46-86.93,38.1-105.46,39.62-18.56,86.95-1.42,105.5,38.19,5.68,12.12,8.13,24.87,7.29,37.92-.36,5.7,3.96,10.62,9.66,10.98,1.8.12,3.52-.24,5.04-.95,3.31-1.55,5.69-4.8,5.95-8.71,1.06-16.55-2.04-32.71-9.21-48.02-23.4-49.95-83.07-71.55-133.01-48.15-29.15,13.65-48.63,39.69-55.12,68.95-4.62,20.82-2.66,43.26,7.06,64.02,6.9,14.73,17.35,27.61,30.21,37.26,4.58,3.42,11.04,2.51,14.48-2.08h.02Z"/>
+  </g>
+  <g>
+    <line class="cls-1" x1="397.88" y1="93.24" x2="21.65" y2="93.24"/>
+    <path class="cls-2" d="M144.67,6.85c2.67,4.18,1.43,9.76-2.76,12.43L25.76,93.25l116.15,73.97c4.19,2.67,5.43,8.24,2.76,12.43-2.67,4.18-8.27,5.4-12.43,2.76L4.17,100.85c-2.59-1.65-4.17-4.52-4.17-7.59s1.57-5.94,4.17-7.59L132.24,4.11c1.49-.95,3.17-1.41,4.83-1.41,2.97,0,5.88,1.48,7.6,4.17v-.02Z"/>
+  </g>
+  <g>
+    <line class="cls-1" x1="958.46" y1="90.87" x2="582.23" y2="90.87"/>
+    <path class="cls-2" d="M835.44,4.48c-2.67,4.18-1.43,9.76,2.76,12.43l116.15,73.97-116.15,73.97c-4.19,2.67-5.43,8.24-2.76,12.43,2.67,4.18,8.27,5.4,12.43,2.76l128.07-81.56c2.59-1.65,4.17-4.52,4.17-7.59s-1.57-5.94-4.17-7.59L847.87,1.74c-1.49-.95-3.17-1.41-4.83-1.41-2.97,0-5.88,1.48-7.6,4.17v-.02Z"/>
+  </g>
+</svg>
+<!-- END Move_Icon.svg -->
+</div>
+`;
+
+
+    container.appendChild(dragHint);
+
+
+    // Hide on first interaction inside the viewer area (iframe or canvas)
+    let hintHidden = false;
+    let hoveringContainer = false;
+    let observedIframe = null;
+
+    function hideHintOnce() {
+      if (hintHidden) return;
+      hintHidden = true;
+      dragHint.classList.add('hidden');
+      dragHint.addEventListener('transitionend', () => dragHint.remove(), { once: true });
+      cleanupHintListeners();
+    }
+    function cleanupHintListeners() {
+      container.removeEventListener('pointerdown', onPointerDownCapture, true);
+      container.removeEventListener('touchstart', onPointerDownCapture, true);
+      window.removeEventListener('blur', onWindowBlur, true);
+      if (observedIframe) observedIframe.removeEventListener('focus', hideHintOnce, true);
+      mo.disconnect();
+    }
+
+    const onPointerDownCapture = () => hideHintOnce();
+    container.addEventListener('pointerdown', onPointerDownCapture, true);
+    container.addEventListener('touchstart', onPointerDownCapture, { capture: true, passive: true });
+    container.addEventListener('pointerenter', () => hoveringContainer = true);
+    container.addEventListener('pointerleave', () => hoveringContainer = false);
+
+    // If SDK uses an iframe, we hide on focus/blur interplay too
+    const onWindowBlur = () => { if (hoveringContainer) hideHintOnce(); };
+    window.addEventListener('blur', onWindowBlur, true);
+
+    const mo = new MutationObserver(() => {
+      const iframe = container.querySelector('iframe');
+      if (iframe && iframe !== observedIframe) {
+        observedIframe = iframe;
+        iframe.addEventListener('focus', hideHintOnce, true);
+      }
+    });
+    mo.observe(container, { childList: true, subtree: true });
+    /* ======================================================== */
+
+    // Fetch all materials, filter out "surface" types
+    let materials = await dc.pcm.getMaterials();
+    materials = materials.filter((m) => !m.isSurfaceMaterial);
+
+    // List of all "K-catalogue" foils with UUID, display name, and category
+    const kTable = [
+      // [K-Number, uuid, MaterialName, category]
+      ["K1","3b2dc929-acb9-48d1-9341-a0df7670e28d","LUXOR® 338","Stocked"],
+      ["K2","92a4c429-b5a6-46db-9948-4318097e935d","LUXOR® 220","Stocked"],
+      ["K3","b3de2110-a952-400d-a3cb-54526358effc","LUXOR® 385","Stocked"],
+      ["K4","bff0045b-9216-4ea9-b1ed-e12f67ae72a6","LUXOR® 232","Stocked"],
+      ["K5","b61060e3-f179-42f6-9d21-721be66f151e","LUXOR® 180","Stocked"],
+      ["K6","d79fe7cb-155c-44ec-9b11-f79b149cff5d","LUXOR® 231","Stocked"],
+      ["K7","c83854f4-6bee-4c95-9948-82804c31089d","LUXOR® 418","Stocked"],
+      ["K8","733fe691-3d10-4df2-b5c7-f012d2c0068e","LUXOR® 397","Stocked"],
+      ["K9","0cf8e147-90ee-4368-b49d-a0cf6470500b","LUXOR® 423","Stocked"],
+      ["K10","596244e1-a7f7-4480-a449-eb89a3de64f7","LUXOR® 420","Stocked"],
+      ["K11","f8d0dca4-7ef5-4d8a-ad0a-d93228974370","LUXOR® 428","Stocked"],
+      ["K12","0a4e4ad3-53ed-4351-aeb0-503388e97f77","ALUFIN® Special","Stocked"],
+      ["K13","89cd121c-a9ef-4350-a49b-378fef39855d","ALUFIN® Mat","Stocked"],
+      ["K14","d3158be4-b983-457a-8ab1-0d0ca478fb44","ALUFIN® Satingloss","Stocked"],
+      ["K15","77cd6a98-d7ac-4289-8e18-a94bb7a35ffa","LUXOR® 362","Stocked"],
+      ["K16","b07f9486-2e20-441c-80bd-9c178091f185","LUXOR® 302","Stocked"],
+      ["K17","acbfd8d6-47eb-4ddb-9c99-8af94e41844c","LUXOR® 308","Stocked"],
+      ["K18","4537c324-6b92-4b0b-8bc1-7f8542d16b55","LUXOR® 326","Stocked"],
+      ["K19","6d9b9ccc-5175-4da1-b654-1f3622f6f673","LUXOR® 327","Stocked"],
+      ["K20","478e7480-dd85-4f37-9010-ed65920dffe5","LUXOR® 391","Stocked"],
+      ["K21","3d845694-956f-4009-9c09-7ae6fe79e55a","LUXOR® 321","Stocked"],
+      ["K22","933fd0f0-4670-48b1-a5f7-d917acff8885","LUXOR® 396","Stocked"],
+      ["K23","52a7d877-55e3-4259-867a-5a15cb412cc4","LUXOR® 355","Stocked"],
+      ["K24","014ea69d-69ba-4c47-ab52-37eadc886752","LUXOR® 334","Stocked"],
+      ["K25","9831ade4-addc-497e-bb5a-498a4da32bf2","LUXOR® 307","Stocked"],
+      ["K26","9168a992-d623-4084-a2dc-1a64ef88bf01","LUXOR® 434","Stocked"],
+      ["K27","1f0b24f1-9a67-4c8a-9b92-edc6994d8d1e","LUXOR® 432","Stocked"],
+      ["K28","f422231b-bda8-4470-afda-33c9465def21","LUXOR® 360","Stocked"],
+      ["K29","02dce9ef-62ed-467f-955b-f3efbf299abf","LUXOR® 323","Stocked"],
+      ["K30","331add36-c2ba-4948-ab4c-d066f34c4574","LUXOR® 336","Stocked"],
+      ["K31","cf671338-9f52-4097-90fa-c197f07b8237","LUXOR® 28782","Stock Enquiry"],
+      ["K32","c0733352-c6db-4a92-a22d-25b8e80e2173","LUXOR® 317","Stock Enquiry"],
+      ["K33","369e0216-9d79-49e1-b0d4-119c3089fa6e","LUXOR® 100900","Stock Enquiry"],
+      ["K34","fffb6782-0b70-45d3-a8fe-43804cf42837","LUXOR® 28835","Stock Enquiry"],
+      ["K35","d75004c4-0d7a-4be8-a8ce-870ea8f9c52f","LUXOR® 341","Stock Enquiry"],
+      ["K36","e150fb0f-fc82-4913-9b03-8ef1f73fd484","LUXOR® 367","Stock Enquiry"],
+      ["K37","edecb5ca-5d04-4c8f-b2c7-a4c7b92cbc5e","LIGHT LINE® Laser Seamless","Stock Enquiry"],
+      ["K38","8d3fe407-5325-4d03-a4f4-707826232cca","LIGHT LINE® SB Dots Select","Stock Enquiry"],
+      ["K39","b4a6296f-cd99-4902-a0b6-bf00a0661f25","LIGHT LINE® SB Marbles Select","Min Making"],
+      ["K40","083da0a3-a5c9-412a-8394-1330c5d45c22","LIGHT LINE® SB Reflex Select","Stock Enquiry"],
+      ["K41","706e5a13-9473-45a4-b312-421c30cd9d45","LIGHT LINE® SB Confetti Select","Min Making"],
+      ["K42","01ccddef-f48e-4bf9-bb69-a8154a757143","LIGHT LINE® Caro","Min Making"],
+      ["K43","ec617d3b-aa7b-422c-98da-04e74cbfd725","LIGHT LINE® Aquadrops Select","Min Making"],
+      ["K44","dd5eb3e8-1f0f-4b72-8a94-97bc35702bcd","LIGHT LINE® SB Stella Select","Min Making"],
+      ["K45","08403120-e826-4b48-b04c-f6023399aae7","LIGHT LINE® Magma","Min Making"],
+      ["K46","f61ba565-7569-4c13-a237-8490ebdde7d0","LIGHT LINE® Laser/385","Min Making"],
+      ["K47","291c5664-c291-4c05-b60f-5e9e12e6e9ef","SB DOTS SELECT 302","Min Making"],
+      ["K48","b1c02337-ae02-43b8-9db6-b74d8e10f107","SB DOTS SELECT 336","Min Making"],
+      ["K49","b8ec0d24-6205-44ff-874f-aa98732e8264","SB DOTS SELECT 307","Min Making"],
+      ["K50","7d8ba0c8-c3d8-4bb6-80d7-20e33757c5ad","LUXOR® 444","Stock Enquiry"],
+      ["K51","d294eca7-6cbe-4eb4-9886-368329267ff0","LUXOR® 392","Stock Enquiry"],
+      ["K52","ed3f15c1-9397-4bf3-8ebd-1844b332eebd","LUXOR® 375","Stock Enquiry"],
+      ["K53","b2c9becc-0eb3-417c-b853-1cb64601790e","LUXOR® 100306","Stock Enquiry"],
+      ["K54","2dd58e80-bca4-4254-9f77-1d6520e9b98c","LUXOR® 390","Stock Enquiry"],
+      ["K55","59773286-6455-4fb3-8db0-7e13f2de7061","LUXOR® 359","Stock Enquiry"],
+      ["K56","0ec37219-444b-46d7-a1d3-3ce5c5b949a3","LUXOR® 319","Stock Enquiry"],
+      ["K58","699ca460-1d6e-4844-97b5-79d747aa66c0","LUXOR® 349","Min Making"],
+      ["K59","d5fdc7b0-3c3f-4571-81f8-143d7c74cc39","LUXOR® 348","Min Making"],
+      ["K61","cd02d047-2b97-400c-96f4-9ccc165266ed","LUXOR® 377","Min Making"]
+    ];
+
+    // Match kTable with actual material data (from PRE API)
+    const kMaterials = [];
+    kTable.forEach(([k, id, MaterialName, info]) => {
+      const material = materials.find(m => m.id === id);
+      if (material) {
+        kMaterials.push({ k, displayName: material.displayName, info, material });
+      }
+    });
+
+    // Sort kMaterials by K number
+    kMaterials.sort((a, b) => {
+      const aNum = parseInt(a.k.replace(/\D+/g, ''), 10);
+      const bNum = parseInt(b.k.replace(/\D+/g, ''), 10);
+      return aNum - bNum;
+    });
+
+    // ----- Debug: Check matching IDs between API and kTable -----
+    const apiIds = new Set(materials.map(m => m.id));
+    const kTableIds = new Set(kTable.map(row => row[1]));
+
+    const apiNotInKtable = materials.filter(m => !kTableIds.has(m.id));
+    if (apiNotInKtable.length > 0) {
+      console.warn("Materials in API but NOT in kTable:");
+      apiNotInKtable.forEach(m => console.warn(`  ${m.id} : ${m.displayName}`));
+    }
+
+    const kTableNotInApi = kTable.filter(row => !apiIds.has(row[1]));
+    if (kTableNotInApi.length > 0) {
+      console.warn("IDs in kTable but NOT in API:");
+      kTableNotInApi.forEach(row => console.warn(`  ${row[1]} : ${row[2]}`));
+    }
+
+    // Short summary counts
+    console.info(`API count: ${materials.length}, kTable count: ${kTable.length}, Matched count: ${kMaterials.length}`);
+
+    // DREAMCOMPOSER scene configuration
+    dc.setBackgroundColor(dcController, "#444444");
+    dc.setEnvironmentVisibility(dcController, false);
+    dc.setGridVisibility(dcController, false);
+    dc.setEnvironment(dcController, "drug_store_1cb1622b-3e0d-4162-b5ba-84b18413a3a7");
+    dc.setRenderQuality(dcController, dc.RenderQuality.VERY_HIGH);
+    dc.setSurfaceMaterial(dcController, "paper_blank_rough_f44db693-c610-4e2d-9721-0dbffe93522a");
+    dc.setGeometry(dcController, "box");
+    const layer = {
+      material: kMaterials.length ? kMaterials[0].material : materials[0],
+      texture: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAYdEVYdFNvZnR3YXJlAFBhaW50Lk5FVCA1LjEuN4vW9zkAAAC2ZVhJZklJKgAIAAAABQAaAQUAAQAAAEoAAAAbAQUAAQAAAFIAAAAoAQMAAQAAAAMAAAAxAQIAEAAAAFoAAABphwQAAQAAAGoAAAAAAAAAo5MAAOgDAACjkwAA6AMAAFBhaW50Lk5FVCA1LjEuNwADAACQBwAEAAAAMDIzMAGgAwABAAAAAQAAAAWgBAABAAAAlAAAAAAAAAACAAEAAgAEAAAAUjk4AAIABwAEAAAAMDEwMAAAAAA02IfdCSajZAAAABVJREFUGFdj/P///38GBgYGJgYoAAA9+AQA1Wk59wAAAABJRU5ErkJggg==",
+      name: "layer1",
+    };
+    dc.setLayers(dcController, [layer]);
+    dc.setPpi(dcController, 0.5);
+    dc.setStageMappings(dcController, {
+      Front: { uvMapping: { x: 0, y: 0, width: 1, height: 1 } },
+      Back: { uvMapping: { x: 0, y: 0, width: 1, height: 1 } },
+      Top: { uvMapping: { x: 0, y: 0, width: 1, height: 1 } },
+      Bottom: { uvMapping: { x: 0, y: 0, width: 1, height: 1 } },
+      Left: { uvMapping: { x: 0, y: 0, width: 1, height: 1 } },
+      Right: { uvMapping: { x: 0, y: 0, width: 1, height: 1 } },
+    });
+    await dc.load(dcController);
+
+    // ----auto turntable that stops on iframe click ----
+    function defaultOr(v, d) {
+      return (typeof v === "number" && Number.isFinite(v)) ? v : d;
+    }
+
+    let cam_turntable = null;
+    try { cam_turntable = await dc.getCameraPosition(dcController); } catch {}
+
+    let yaw_turntable = defaultOr(cam_turntable?.yaw, 338.2);
+    let pitch_turntable = defaultOr(cam_turntable?.pitch, 79.48);
+    let distance_turntable = defaultOr(cam_turntable?.distance, 0.24);
+    const step_turntable = -0.1;        // deg per frame
+    const delay = 70;   // delay time in milliseconds
+
+    let running_turntable = true;
+    let rafId_turntable = null;
+
+    function tick_turntable() {
+      if (!running_turntable) return;
+      yaw_turntable = (yaw_turntable + step_turntable) % 360;
+      dc.updateCameraPosition(dcController, { 
+        yaw: yaw_turntable, 
+        pitch: pitch_turntable, 
+        distance: distance_turntable 
+      }, delay / 1000);
+      rafId_turntable = requestAnimationFrame(tick_turntable);
+    }
+    tick_turntable();
+
+    function stopRotation_turntable() {
+      if (!running_turntable) return;
+      running_turntable = false;
+      if (rafId_turntable) cancelAnimationFrame(rafId_turntable);
+    }
+
+    // unique container var
+    const turntableContainerEl = document.getElementById("frame-container");
+
+    // 1) stop if pointer goes down on the iframe element itself
+    const mo_turntable = new MutationObserver(() => {
+      const ifr = turntableContainerEl.querySelector("iframe");
+      if (!ifr) return;
+      ["pointerdown","mousedown","touchstart","wheel"].forEach(evt => {
+        ifr.addEventListener(evt, stopRotation_turntable, { capture: true, passive: true });
+      });
+      ifr.addEventListener("focus", stopRotation_turntable, true);
+    });
+    mo_turntable.observe(turntableContainerEl, { childList: true, subtree: true });
+
+    // 2) fallback: blur while hovering stops rotation
+    let hovering_turntable = false;
+    turntableContainerEl.addEventListener("pointerenter", () => hovering_turntable = true);
+    turntableContainerEl.addEventListener("pointerleave", () => hovering_turntable = false);
+    window.addEventListener("blur", () => { if (hovering_turntable) stopRotation_turntable(); }, true);
+
+    // 3) stop if tab is hidden
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "hidden") stopRotation_turntable();
+    });
+    // ---- end turntable ----
+
+    // Handle which card is currently selected (to highlight)
+    let selectedMaterialDiv = null;
+    function selectMaterialCard(cardDiv) {
+      if (selectedMaterialDiv) selectedMaterialDiv.classList.remove("selected");
+      cardDiv.classList.add("selected");
+      selectedMaterialDiv = cardDiv;
+    }
+
+    // Categories for grouping
+    const categories = [
+      { label: "Stocked Foils", info: "Stocked" },
+      { label: "Subject to Min Making", info: "Min Making" },
+      { label: "Subject to Stock Enquiry", info: "Stock Enquiry" }
+    ];
+
+    // Render cards per category section
+    const materialsGrid = document.getElementById("materials-grid");
+    materialsGrid.innerHTML = "";
+    let materialWasSelected = false;
+
+    categories.forEach(({ label, info }) => {
+      const cards = kMaterials.filter(m => m.info === info);
+      if (cards.length === 0) return;
+
+      const section = document.createElement("div");
+      section.className = "category-section";
+
+      const lineContainer = document.createElement("div");
+      lineContainer.className = "category-line-title";
+      const lineLeft = document.createElement("div");
+      lineLeft.className = "line";
+      lineContainer.appendChild(lineLeft);
+      const header = document.createElement("div");
+      header.className = "title";
+      header.textContent = label;
+      lineContainer.appendChild(header);
+      const lineRight = document.createElement("div");
+      lineRight.className = "line";
+      lineContainer.appendChild(lineRight);
+      section.appendChild(lineContainer);
+
+      const matRow = document.createElement("div");
+      matRow.className = "category-materials";
+      cards.forEach(({k, displayName, info, material}) => {
+        const materialDiv = document.createElement("div");
+        materialDiv.classList.add("material");
+
+        const kDiv = document.createElement("div");
+        kDiv.className = "k-code";
+        kDiv.textContent = k;
+
+        const nameDiv = document.createElement("div");
+        nameDiv.className = "material-name";
+        nameDiv.textContent = displayName;
+
+        const infoDiv = document.createElement("div");
+        infoDiv.className = "material-info";
+        infoDiv.textContent = info;
+
+        const img = document.createElement("img");
+        img.alt = displayName;
+        img.src = material.files.find((file) => file.type === "Thumbnail").url;
+
+        materialDiv.addEventListener("click", () => {
+          dc.setLayers(dcController, [{ ...layer, material: material.id }]);
+          selectMaterialCard(materialDiv);
+        });
+
+        materialDiv.appendChild(img);
+        materialDiv.appendChild(kDiv);
+        materialDiv.appendChild(nameDiv);
+        materialDiv.appendChild(infoDiv);
+        matRow.appendChild(materialDiv);
+
+        if (!materialWasSelected) {
+          setTimeout(() => {
+            materialDiv.classList.add("selected");
+            selectedMaterialDiv = materialDiv;
+          }, 0);
+          materialWasSelected = true;
+        }
+      });
+
+      section.appendChild(matRow);
+      materialsGrid.appendChild(section);
+    });
+  </script>
 </body>
 </html>
